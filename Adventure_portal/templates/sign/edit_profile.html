@@ -1,0 +1,28 @@
+{% extends 'default.html' %}
+{% block content %}
+<style>
+   .leftout {
+    width: 95rem;
+    padding: 10px;
+    margin-left: 5%; /
+   }
+</style>
+<h2>Обновление профиля</h2>
+<div class="leftout">
+  <div class="card" style="width: 40rem;">
+    <div class="card-header">
+      Данные пользователя {{ request.user.username }}
+    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><strong>Никнейм: </strong><br>{{ form.username }}</li>
+      <li class="list-group-item"><strong>Имя: </strong><br>{{ form.first_name }}</li>
+      <li class="list-group-item"><strong>Фамилия: </strong><br>{{ form.last_name }}</li>
+      <li class="list-group-item"><strong>Email: </strong><br>{{ form.email }}</li>
+      <li class="list-group-item"><button class="btn btn-lg btn-success" type="submit">Обновить профиль</button></li>
+    </ul>
+    </form>
+  </div>
+</div>
+{% endblock content %}

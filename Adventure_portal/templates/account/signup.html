@@ -1,0 +1,39 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<style>
+   .leftout {
+    width: 95rem;
+    padding: 10px;
+    margin-left: 10%; /
+   }
+</style>
+<div class="leftout">
+<h1>{% trans "Sign Up" %}</h1>
+
+<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+  <div class="row">
+    <div class="col-5">
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-primary">
+          Регистрация:
+        </li>
+        <li class="list-group-item list-group-item-info">
+          <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <input type="submit" class="btn btn-primary btn-sm" value="{% trans 'Sign Up' %} &raquo;">
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

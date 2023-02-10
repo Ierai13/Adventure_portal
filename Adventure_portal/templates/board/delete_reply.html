@@ -1,0 +1,5 @@
+<form action="{% url 'delete_reply' reply.id %}" method="post">
+  {% csrf_token %}
+  <p>Уверены, что хотите удалить откилк к "{{ object.post.title }}"?</p>
+  <input type="submit" value="Confirm">
+</form>

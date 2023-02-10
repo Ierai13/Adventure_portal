@@ -1,0 +1,83 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+{% load board_custom_tags %}
+{% block content %}
+<style>
+   .notcenter {
+    width: 95rem;
+    padding: 10px;
+    margin: auto; /
+   }
+</style>
+    <div class="card" style="width: 40rem;">
+       <div class="card-header">
+           <strong>Поиск по объявлениям</strong>
+       </div>
+       <form action="" method="get">
+           <ul class="list-group list-group-flush">
+               <li class="list-group-item">{{ filterset.form.as_div }}</li>
+               <li class="list-group-item"><input type="submit" class="btn btn-primary btn-sm" value="Найти"></li>
+           </ul>
+       </form>
+    </div>
+{% sort_replyes replylist=replyes user=request.user as s_r %}
+{% for reply in s_r %}
+{% if reply.author != request.user %}
+{% if reply.accept_value is None %}
+<div class="notcenter">
+  <div class="card mb-3" style="width: 40rem;">
+    <div class="card text-center">
+      <div class="card-header">
+        от {{ reply.pub_date }} | к {{ reply.post.title }}
+      </div>
+      <div class="card-body">
+        <p class="card-text">{{ reply.text }}</p>
+        <a href="{% url 'post_detail' reply.post.id %}" class="btn btn-primary">К посту</a>
+        <a href="{% url 'accept_reply' reply.id %}" class="btn btn-primary">Принять отклик</a>
+        <a href="{% url 'reject_reply' reply.id %}" class="btn btn-primary">Отклонить отклик</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="notcenter">
+  <div class="card mb-3" style="width: 40rem;">
+    <div class="card text-center">
+      <div class="card-header">
+        от {{ reply.pub_date }} | к {{ reply.post.title }}
+      </div>
+      <div class="card-body">
+        <h5 class="card-title"> Вы {{ reply.accept_value|confirmation }} отклик</h5>
+        <p class="card-text">{{ reply.text }}</p>
+        <a href="{% url 'post_detail' reply.post.id %}" class="btn btn-primary">К посту</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% if not replyes %}
+<h4>Нет откликов к этому объявлению</h4>
+<a href="{% url 'profile' %}" class="btn btn-primary">К профилю</a>
+{% endif %}
+<div class="notcenter">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+          {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="{% url_replace page=1 %}">1</a></li>
+            {% if page_obj.previous_page_number != 1 %}
+        <li class="page-item"><a class="page-link" href="{% url_replace page=page_obj.previous_page_number %}">Предыдущая</a></li>
+            {% endif %}
+          {% endif %}
+        <li class="page-item disabled"><a class="page-link">{{ page_obj.number }}</a></li>
+          {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="{% url_replace page=page_obj.next_page_number %}">Следующая</a></li>
+            {% if paginator.num_pages != page_obj.next_page_number %}
+        <li class="page-item"><a class="page-link" href="{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a></li>
+            {% endif %}
+          {% endif %}
+      </ul>
+    </nav>
+</div>
+{% endblock content %}

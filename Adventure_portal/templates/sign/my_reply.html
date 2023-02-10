@@ -1,0 +1,52 @@
+{% extends 'default.html' %}
+{% block content %}
+<style>
+   .onleft {
+    width: 95rem;
+    padding: 10px;
+    margin-left: 5%; /
+   }
+</style>
+{% if my_replyes %}
+{% for reply in my_replyes %}
+<div class="onleft">
+<div class="card mb-3" style="width: 40rem;">
+<div class="card text-center">
+  <div class="card-header">
+    от {{ reply.pub_date }} | к {{ reply.post.title }}
+  </div>
+  <div class="card-body">
+    <p class="card-text">{{ reply.text }}</p>
+    <a href="{% url 'post_detail' reply.post.id %}" class="btn btn-primary">К посту</a>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop{{ reply.id }}">Удалить
+    </button>
+    <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop{{ reply.id }}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title fs-5" id="staticBackdropLabel">Удалить отклик</h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form action="{% url 'delete_reply' reply.id %}" method="post">
+                                {% csrf_token %}
+                                <p>Уверены, что хотите удалить откилк к "{{ reply.post.title }}"?</p>
+                                <input type="submit" class="btn btn-primary btn-sm" value="Удалить">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+  </div>
+</div>
+</div>
+</div>
+{% endfor %}
+{% else %}
+<h3>Откликов нет</h3>
+{% endif %}
+{% endblock content %}

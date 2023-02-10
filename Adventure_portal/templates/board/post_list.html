@@ -1,0 +1,93 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+{% load board_custom_tags %}
+{% block content %}
+<style>
+   .leftout {
+    width: 95rem;
+    padding: 10px;
+    margin-left: 10%; /
+   }
+</style>
+{% if posts %}
+<div class="leftout">
+<div class="row row-cols-1 row-cols-md-2 g-10">
+    {% for post in posts %}
+  <div class="col">
+    <div class="card mb-3" style="width: 40rem;">
+        <div class="card text-center">
+            <div class="card-header">
+                {{ post.pub_date }} | в категории: {{ post.category|cat_translate }}, автор: {{ post.author }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">{{ post.text|safe }}</p>
+                <p>
+                <a href="{% url 'post_detail' post.id %}" class="btn btn-primary">Подробнее</a>
+                    {% if not post.author == request.user %}
+                        {% if request.user.is_authenticated %}
+                        {% check_activation user=request.user as ca %}
+                        {% if not ca %}
+                        {% reply_check user=request.user post_id=post.id as rc %}
+                            {% if rc %}
+                            <button type="button" class="btn btn-info btn-sm">Вы уже оставляли отклик</button>
+                            {% else %}
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop{{ post.id }}">Откликнуться</button>
+                            {% endif %}
+                        {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card-footer text-muted">
+                Изменен в: {{ post.edit_date }}
+            </div>
+        </div>
+    </div>
+  </div>
+    <!-- Modal -->
+<div class="modal fade" id="staticBackdrop{{ post.id }}" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="staticBackdropLabel">Напишите текст отклика ниже</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'sendreply' post.id %}" method="post">
+                    {% csrf_token %}
+                    Мое сообщение:
+                    <p>{{ form.text }}</p>
+                    <hr>
+                    <input type="submit" class="btn btn-primary btn-sm" value="Отклинуться">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endfor %}
+</div>
+</div>
+{% endif %}
+<div class="leftout">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+          {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+            {% if page_obj.previous_page_number != 1 %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a></li>
+            {% endif %}
+          {% endif %}
+        <li class="page-item disabled"><a class="page-link">{{ page_obj.number }}</a></li>
+          {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a></li>
+            {% if paginator.num_pages != page_obj.next_page_number %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+            {% endif %}
+          {% endif %}
+      </ul>
+    </nav>
+</div>
+{% endblock content %}

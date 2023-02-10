@@ -1,0 +1,94 @@
+{% extends 'default.html' %}
+{% load board_custom_tags %}
+{% block content %}
+<style>
+   A {
+    color: red;
+   }
+   A:visited {
+    color: #6600cc;
+   }
+   A:active {
+    color: #1BDA47;
+   }
+   .button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #0DDBE2;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+</style>
+<div class="row">
+    <div class="col-4">
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-primary"><strong>Профиль пользователя {{ request.user.username }}</strong></li>
+        <li class="list-group-item list-group-item-info"><strong>Никнейм пользователя: </strong>{{ request.user.username }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Имя пользователя: </strong>{{ request.user.first_name }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Фамилия пользователя: </strong>{{ request.user.last_name }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Email пользователя: </strong>{{ request.user.email }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Статус: </strong>
+        {% check_activation user=request.user as ca %}
+        {% if ca %}
+            Не активирован. <a href="{% url 'activation' %}">Активировать!</a>
+        {% else %}
+            Активирован
+        {% endif %}
+        </li>
+    </ul>
+    </div>
+</div>
+<p>
+  <br><a href="{% url 'update_user' %}" class="btn btn-info">Редактировать профиль</a>
+</p>
+<div>
+    <p><a href="{% url 'password_change' %}" class="btn btn-info">Изменить пароль</a><--- Создайте новый пароль для входа</p>
+</div>
+<div>
+    <p>
+        <button class="button" style="vertical-align:middle">
+        <a href="{% url 'my_replyes' %}">Мои отклики</a></button><--- Отклики, оставленные Вами
+    </p>
+    <p>
+        <button class="button" style="vertical-align:middle">
+            <a href="{% url 'my_posts' %}">Мои Объявления</a></button><--- Объявления, написанные Вами
+    </p>
+    <p>
+        <button class="button" style="vertical-align:middle">
+            <a href="{% url 'reply_for_me' %}">Отклики</a></button><--- Отклики, на Ваши объявления
+    </p>
+
+</div>
+{% endblock content %}

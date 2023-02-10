@@ -1,0 +1,56 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+{% block content %}
+<style>
+   .leftout {
+    width: 95rem;
+    padding: 10px;
+    margin-left: 10%; /
+   }
+</style>
+{% if my_posts %}
+{% for post in my_posts %}
+<div class="leftout">
+<div class="card mb-3" style="width: 40rem;">
+<div class="card text-center">
+  <div class="card-header">
+    {{ post.pub_date }} | Категория: {{ post.category|cat_translate }}
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{ post.title }}</h5>
+    <p class="card-text">{{ post.text|safe }}</p>
+    <a href="{% url 'post_detail' post.id %}" class="btn btn-primary">К посту</a>
+    <a href="{% url 'post_edit' post.id %}" class="btn btn-primary">Редактировать</a>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#staticDeleteBackdrop">Удалить
+    </button>
+  </div>
+  <div class="modal fade" id="staticDeleteBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+      tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h3 class="modal-title fs-5" id="staticDeleteBackdropLabel">Удалeние объявления</h3>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form action="{% url 'delete_post' post.id %}" method="post">
+                    {% csrf_token %}
+                    <p>Уверены, что хотите удалить объявление "{{ post.title }}"?</p>
+                    <input type="submit" class="btn btn-primary btn-sm" value="Удалить">
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="card-footer text-muted">
+    {{ post.edit_date }}
+  </div>
+</div>
+</div>
+</div>
+{% endfor %}
+  {% else %}
+  <p>Постов нет</p>
+  {% endif %}
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends 'default.html' %}
+{% load board_custom_tags %}
+{% block content %}
+<style>
+   .leftout {
+    width: 95rem;
+    padding: 10px;
+    margin-left: 5%; /
+   }
+</style>
+{% check_activation user=request.user as ca %}
+{% if ca %}
+<div class="leftout">
+    <div class="card" style="width: 40rem;">
+        <form action="" method="post">
+            {% csrf_token %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><label for="message-password" class="col-form-label">Введите пароль из сообщения:</label>
+                    <br><input class="form-control" name="text-password" id="message-password"></li>
+                <li class="list-group-item"><button class="btn btn-lg btn-success" type="submit">Активировать</button></li>
+            </ul>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="leftout">
+    <div class="alert alert-success" role="alert">
+      Вы уже активировали свой аккаунт!
+    </div>
+</div>
+{% endif %}
+{% endblock content %}

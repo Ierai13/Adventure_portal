@@ -1,0 +1,28 @@
+{% extends 'default.html' %}
+
+{% block content %}
+<style>
+   .leftout {
+    width: 95rem;
+    padding: 10px;
+    margin-left: 5%; /
+   }
+</style>
+<div class="leftout">
+    <div class="card" style="width: 55rem;">
+        <div class="card-header">
+            <strong>Создать Объявление</strong>
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+        <ul class="list-group list-group-flush">
+            {{ form.media }}
+            <li class="list-group-item"><strong>Заголовок: </strong><br> {{ form.title }}</li>
+            <li class="list-group-item"><strong>Объявление: </strong><br> {{ form.text }}</li>
+            <li class="list-group-item"><strong>Категория: </strong> {{ form.category }}</li>
+            <li class="list-group-item"><button class="btn btn-lg btn-success" type="submit">Создать Объявление</button></li>
+        </ul>
+        </form>
+    </div>
+</div>
+{% endblock content %}

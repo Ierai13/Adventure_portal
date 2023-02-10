@@ -1,0 +1,5 @@
+<form action="{% url 'delete_post' post_detail.id %}" method="post">
+  {% csrf_token %}
+  <p>Уверены, что хотите удалить объявление "{{ post_detail.title }}"?</p>
+  <input type="submit" class="btn btn-primary btn-sm" value="Confirm">
+</form>
